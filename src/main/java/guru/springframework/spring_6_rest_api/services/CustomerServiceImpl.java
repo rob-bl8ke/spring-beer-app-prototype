@@ -73,7 +73,5 @@ public class CustomerServiceImpl implements CustomerService {
 
         existing.setName(customer.getName());
         existing.setLastModifiedDate(LocalDateTime.now());
-
-        customerMap.put(existing.getId(), existing);
     }
 }
