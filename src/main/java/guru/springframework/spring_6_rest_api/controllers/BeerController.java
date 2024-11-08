@@ -2,7 +2,7 @@ package guru.springframework.spring_6_rest_api.controllers;
 
 import guru.springframework.spring_6_rest_api.model.Beer;
 import guru.springframework.spring_6_rest_api.services.BeerService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/beer")
 public class BeerController {
