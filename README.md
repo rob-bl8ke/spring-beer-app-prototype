@@ -101,3 +101,7 @@ You can manually change the settings.json and select a runtime by choosing one a
 ### You struggled to get this to work
 
 - The way you found (which isn't workspace specific) is Command Pallette (CTRL+ALT+P) and then find "Java: Configure Java Runtime", and then simply change the JDK runtime there.
+
+# Important Links
+
+- [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
