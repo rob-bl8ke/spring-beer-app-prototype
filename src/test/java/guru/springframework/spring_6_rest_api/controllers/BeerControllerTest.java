@@ -1,6 +1,7 @@
 package guru.springframework.spring_6_rest_api.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
 
@@ -27,6 +29,16 @@ class BeerControllerTest {
     BeerService beerService;
 
     BeerServiceImpl beerServiceImpl = new BeerServiceImpl();
+
+    @Test
+    void testListBeers() throws Exception {
+        given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
+
+        mockMvc.perform(get("/api/v1/beer").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.length()", is(3)));
+    }
     
     @Test
     void getBeerById() throws Exception {
@@ -38,9 +50,9 @@ class BeerControllerTest {
         
         // Run a check to ensure the response is ok and the payload is sent in JSON format.
         mockMvc.perform(get("/api/v1/beer/" + testBeer.getId())
-            .accept(org.springframework.http.MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id", is(testBeer.getId().toString())))
             .andExpect(jsonPath("$.beerName", is(testBeer.getBeerName().toString())))
             ;
