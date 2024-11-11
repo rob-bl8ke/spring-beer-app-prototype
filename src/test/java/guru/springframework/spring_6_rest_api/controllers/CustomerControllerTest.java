@@ -3,6 +3,7 @@ package guru.springframework.spring_6_rest_api.controllers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,6 +50,9 @@ public class CustomerControllerTest {
         customerServiceImpl = new CustomerServiceImpl();
     }
 
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
     @Test
     void testDeleteCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().get(0);
@@ -60,7 +64,6 @@ public class CustomerControllerTest {
         // Use 'ArgumentCaptor' to get an accurate assertion on the identifier
         // to check whether the id property is being parsed properly
         // A very handy way of asserting that values are being sent through parts of your code properly
-        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
         verify(customerService).deleteById(uuidArgumentCaptor.capture());
         assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
@@ -76,7 +79,8 @@ public class CustomerControllerTest {
             .andExpect(status().isNoContent());
 
         // Verify that "updateCustomerById" has been called
-        verify(customerService).updateCustomerById(eq(customer.getId()), any(Customer.class));
+        verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(Customer.class));
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
