@@ -1,5 +1,6 @@
 package guru.springframework.spring_6_rest_api.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import guru.springframework.spring_6_rest_api.model.Beer;
@@ -17,8 +17,13 @@ import guru.springframework.spring_6_rest_api.services.BeerServiceImpl;
 // These are all static imports
 // ... doesn't usually display in your intelisense list so must be added manually
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -35,12 +40,46 @@ class BeerControllerTest {
     @MockBean 
     BeerService beerService;
 
-    BeerServiceImpl beerServiceImpl = new BeerServiceImpl();
+    BeerServiceImpl beerServiceImpl;
+
+    @BeforeEach
+    void setUp() {
+        beerServiceImpl = new BeerServiceImpl();
+    }
 
     @Test
-    void testCreateNewBeer() throws JsonProcessingException {        
+    void testUpdateBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
-        System.out.println(objectMapper.writeValueAsString(beer)); 
+
+        mockMvc.perform(put("/api/v1/beer/" + beer.getId())
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(beer)))
+        .andExpect(status().isNoContent());
+        
+        // Verify that "updateBeerById" has been called
+        verify(beerService).updateBeerById(eq(beer.getId()), any(Beer.class));
+    }
+
+    @Test
+    void testCreateNewBeer() throws Exception {        
+        Beer beer = beerServiceImpl.listBeers().get(0);
+        
+        // A new beer coming in should not have an id or version. 
+        beer.setVersion(null);
+        beer.setId(null);
+
+        given(beerService.saveNewBeer(any(Beer.class)))
+            .willReturn(beerServiceImpl.listBeers().get(1));
+
+        // Emulating what's happening in the database so returning the "correct" beer
+        // isn't important. Currently testing the basic response properties.
+        mockMvc.perform(post("/api/v1/beer")
+            .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beer)))
+            .andExpect(status().isCreated())
+            .andExpect(header().exists("Location"));
     }
 
     @Test

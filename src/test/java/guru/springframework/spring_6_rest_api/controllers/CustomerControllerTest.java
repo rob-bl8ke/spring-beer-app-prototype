@@ -1,11 +1,14 @@
 package guru.springframework.spring_6_rest_api.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import guru.springframework.spring_6_rest_api.model.Customer;
 import guru.springframework.spring_6_rest_api.services.CustomerService;
@@ -14,19 +17,66 @@ import guru.springframework.spring_6_rest_api.services.CustomerServiceImpl;
 // These are all static imports
 // ... doesn't usually display in your intelisense list so must be added manually
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CustomerController.class)
 public class CustomerControllerTest {
+    @Autowired
+    ObjectMapper objectMapper;
+    
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
     CustomerService customerService;
 
-    CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+    CustomerServiceImpl customerServiceImpl;
+
+    @BeforeEach
+    void setUp() {
+        customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void testUpdateCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+
+        mockMvc.perform(put("/api/v1/customer/" + customer.getId())
+            .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customer)))
+            .andExpect(status().isNoContent());
+
+        // Verify that "updateCustomerById" has been called
+        verify(customerService).updateCustomerById(eq(customer.getId()), any(Customer.class));
+    }
+
+    @Test
+    void testCreateCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+        
+        customer.setId(null);
+        customer.setVersion(null);
+        
+        given(customerService.saveNewCustomer(any(Customer.class)))
+            .willReturn(customerServiceImpl.listCustomers().get(1));
+
+        // Emulating what's happening in the database so returning the "correct" customer
+        // isn't important. Currently testing the basic response properties.
+        mockMvc.perform(post("/api/v1/customer")
+            .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customer)))
+            .andExpect(status().isCreated())
+            .andExpect(header().exists("Location"));
+    }
 
     @Test
     void testListCustomers() throws Exception {
