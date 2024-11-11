@@ -28,6 +28,9 @@ class BeerControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     // Create a mock of this service. By default all members return null.
     @MockBean 
     BeerService beerService;
@@ -35,10 +38,7 @@ class BeerControllerTest {
     BeerServiceImpl beerServiceImpl = new BeerServiceImpl();
 
     @Test
-    void testCreateNewBeer() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        
+    void testCreateNewBeer() throws JsonProcessingException {        
         Beer beer = beerServiceImpl.listBeers().get(0);
         System.out.println(objectMapper.writeValueAsString(beer)); 
     }
