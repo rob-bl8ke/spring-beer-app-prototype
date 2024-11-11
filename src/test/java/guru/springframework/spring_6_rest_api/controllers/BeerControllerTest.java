@@ -69,7 +69,7 @@ class BeerControllerTest {
         Map<String, Object> beerMap = new HashMap<>();
         beerMap.put("beerName", "Heineken");
 
-        mockMvc.perform(patch("/api/v1/beer/" + beer.getId())
+        mockMvc.perform(patch(BeerController.BEER_PATH + "/" + beer.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(beerMap))
             .accept(MediaType.APPLICATION_JSON))
@@ -86,7 +86,7 @@ class BeerControllerTest {
     void testDeleteBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
-        mockMvc.perform(delete("/api/v1/beer/" + beer.getId())
+        mockMvc.perform(delete(BeerController.BEER_PATH + "/" + beer.getId())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
@@ -102,7 +102,7 @@ class BeerControllerTest {
     void testUpdateBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
-        mockMvc.perform(put("/api/v1/beer/" + beer.getId())
+        mockMvc.perform(put(BeerController.BEER_PATH + "/" + beer.getId())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(beer)))
@@ -126,7 +126,7 @@ class BeerControllerTest {
 
         // Emulating what's happening in the database so returning the "correct" beer
         // isn't important. Currently testing the basic response properties.
-        mockMvc.perform(post("/api/v1/beer")
+        mockMvc.perform(post(BeerController.BEER_PATH)
             .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beer)))
@@ -138,7 +138,7 @@ class BeerControllerTest {
     void testListBeers() throws Exception {
         given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
 
-        mockMvc.perform(get("/api/v1/beer").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(BeerController.BEER_PATH).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.length()", is(3)));
@@ -153,7 +153,7 @@ class BeerControllerTest {
         given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
         
         // Run a check to ensure the response is ok and the payload is sent in JSON format.
-        mockMvc.perform(get("/api/v1/beer/" + testBeer.getId())
+        mockMvc.perform(get(BeerController.BEER_PATH + "/" + testBeer.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
