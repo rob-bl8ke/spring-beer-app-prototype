@@ -2,6 +2,7 @@ package guru.springframework.spring_6_rest_api.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,6 +15,7 @@ import guru.springframework.spring_6_rest_api.model.Customer;
 import guru.springframework.spring_6_rest_api.services.CustomerService;
 import guru.springframework.spring_6_rest_api.services.CustomerServiceImpl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 // These are all static imports
 // ... doesn't usually display in your intelisense list so must be added manually
 import static org.hamcrest.core.Is.is;
@@ -21,10 +23,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.UUID;
 
 @WebMvcTest(CustomerController.class)
 public class CustomerControllerTest {
@@ -42,6 +47,22 @@ public class CustomerControllerTest {
     @BeforeEach
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+
+        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
+
+        // Use 'ArgumentCaptor' to get an accurate assertion on the identifier
+        // to check whether the id property is being parsed properly
+        // A very handy way of asserting that values are being sent through parts of your code properly
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+        verify(customerService).deleteById(uuidArgumentCaptor.capture());
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
