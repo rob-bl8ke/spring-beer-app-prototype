@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,5 +72,11 @@ public class BeerController {
     public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
         log.debug("Get beer by id was called in controller");
         return beerService.getBeerById(beerId);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity handleNotFoundExeption() {
+        System.out.println("In exception handler");
+        return ResponseEntity.notFound().build();
     }
 }
