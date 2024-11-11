@@ -21,15 +21,17 @@ import guru.springframework.spring_6_rest_api.services.BeerServiceImpl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -56,6 +58,30 @@ class BeerControllerTest {
     @Captor
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
+    @Captor
+    ArgumentCaptor<Beer> beerArgumentCaptor;
+
+    @Test
+    void testPatchBeer() throws Exception {
+        Beer beer = beerServiceImpl.listBeers().get(0);
+
+        // Provide the data to be patched (it is serialized below)
+        Map<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "Heineken");
+
+        mockMvc.perform(patch("/api/v1/beer/" + beer.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(beerMap))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect((status().isNoContent()));
+
+        verify(beerService).patchById(uuidArgumentCaptor.capture(), beerArgumentCaptor.capture());
+
+        // Use ArgumentCaptor to assert that the correct field was patched.
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(beer.getId());
+        assertThat(beerArgumentCaptor.getValue().getBeerName()).isEqualTo(beerMap.get("beerName"));
+    }
+
     @Test
     void testDeleteBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
@@ -69,7 +95,7 @@ class BeerControllerTest {
         // A very handy way of asserting that values are being sent through parts of your code properly
         verify(beerService).deleteById(uuidArgumentCaptor.capture());
 
-        assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(beer.getId());
     }
 
     @Test
@@ -84,7 +110,7 @@ class BeerControllerTest {
         
         // Verify that "updateBeerById" has been called
         verify(beerService).updateBeerById(uuidArgumentCaptor.capture(), any(Beer.class));
-        assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(beer.getId());
     }
 
     @Test

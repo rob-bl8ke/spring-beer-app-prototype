@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import guru.springframework.spring_6_rest_api.model.Customer;
@@ -21,15 +22,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 // ... doesn't usually display in your intelisense list so must be added manually
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @WebMvcTest(CustomerController.class)
@@ -53,6 +56,31 @@ public class CustomerControllerTest {
     @Captor
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
+    @Captor
+    ArgumentCaptor<Customer> customerArgumentCaptor;
+
+
+    @Test
+    void testPatchCustomer() throws JsonProcessingException, Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+
+        // Provide the data to be patched (it is serialized below)
+        Map<String, Object> customerMap = new HashMap<>();
+        customerMap.put("name", "Atta Boy");
+
+        mockMvc.perform(patch("/api/v1/customer/" + customer.getId())
+            .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customerMap)))
+            .andExpect(status().isNoContent());
+
+        verify(customerService).patchById(uuidArgumentCaptor.capture(), customerArgumentCaptor.capture());
+
+        // Use ArgumentCaptor to assert that the correct field was patched.
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(customer.getId());
+        assertThat(customerArgumentCaptor.getValue().getName()).isEqualTo(customerMap.get("name"));
+    }
+
     @Test
     void testDeleteCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().get(0);
@@ -65,7 +93,7 @@ public class CustomerControllerTest {
         // to check whether the id property is being parsed properly
         // A very handy way of asserting that values are being sent through parts of your code properly
         verify(customerService).deleteById(uuidArgumentCaptor.capture());
-        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(customer.getId());
     }
 
     @Test
@@ -80,7 +108,7 @@ public class CustomerControllerTest {
 
         // Verify that "updateCustomerById" has been called
         verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(Customer.class));
-        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(customer.getId());
     }
 
     @Test
