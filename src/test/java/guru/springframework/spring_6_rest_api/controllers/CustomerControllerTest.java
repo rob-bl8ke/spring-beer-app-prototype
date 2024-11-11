@@ -59,6 +59,14 @@ public class CustomerControllerTest {
     @Captor
     ArgumentCaptor<Customer> customerArgumentCaptor;
 
+    @Test
+    void getCustomerByIdNotFound() throws Exception {
+        given(customerService.getCustomerById(any(UUID.class)))
+            .willThrow(NotFoundException.class);
+        
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+            .andExpect(status().isNotFound());
+    }
 
     @Test
     void testPatchCustomer() throws JsonProcessingException, Exception {

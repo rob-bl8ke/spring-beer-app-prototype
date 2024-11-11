@@ -73,10 +73,4 @@ public class BeerController {
         log.debug("Get beer by id was called in controller");
         return beerService.getBeerById(beerId);
     }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity handleNotFoundExeption() {
-        System.out.println("In exception handler");
-        return ResponseEntity.notFound().build();
-    }
 }
