@@ -11,5 +11,5 @@ import guru.springframework.spring_6_rest_api.model.BeerDTO;
 public interface BeerMapper {
     
     Beer beerDtoToBeer(BeerDTO dto);
-    BeerDTO beerToBearDto(Beer beer);
+    BeerDTO beerToBeerDto(Beer beer);
 }
