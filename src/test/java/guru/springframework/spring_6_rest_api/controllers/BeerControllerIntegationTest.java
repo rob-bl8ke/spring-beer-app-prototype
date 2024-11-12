@@ -1,14 +1,17 @@
 package guru.springframework.spring_6_rest_api.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import guru.springframework.spring_6_rest_api.entities.Beer;
 import guru.springframework.spring_6_rest_api.model.BeerDTO;
 import guru.springframework.spring_6_rest_api.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +24,21 @@ public class BeerControllerIntegationTest {
 
     @Autowired
     BeerRepository beerRepository;
+
+    @Test
+    void testBeerIdNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.getBeerById(UUID.randomUUID());
+        });
+    }
+
+    @Test
+    void testGetById() {
+        Beer beer = beerRepository.findAll().get(0);
+        BeerDTO dto = beerController.getBeerById(beer.getId());
+
+        assertThat(dto).isNotNull();
+    }
 
     @Test
     void testListBeers() {
