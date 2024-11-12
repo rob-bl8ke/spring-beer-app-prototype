@@ -1,9 +1,9 @@
 package guru.springframework.spring_6_rest_api.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,18 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public List<BeerDTO> listBeers() {
-        return null;
+        return beerRepository.findAll()
+            .stream()
+            .map(beerMapper::beerToBearDto)
+            .collect(Collectors.toList());
     }
 
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
-        return null;
+        return Optional.ofNullable(beerMapper.beerToBearDto(
+            beerRepository.findById(id)
+            .orElse(null)
+        ));
     }
 
     @Override
