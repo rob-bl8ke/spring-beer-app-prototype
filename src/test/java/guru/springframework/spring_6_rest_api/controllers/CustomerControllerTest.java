@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import guru.springframework.spring_6_rest_api.model.Customer;
+import guru.springframework.spring_6_rest_api.model.CustomerDTO;
 import guru.springframework.spring_6_rest_api.services.CustomerService;
 import guru.springframework.spring_6_rest_api.services.CustomerServiceImpl;
 
@@ -58,7 +58,7 @@ public class CustomerControllerTest {
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<Customer> customerArgumentCaptor;
+    ArgumentCaptor<CustomerDTO> customerArgumentCaptor;
 
     @Test
     void getCustomerByIdNotFound() throws Exception {
@@ -71,7 +71,7 @@ public class CustomerControllerTest {
 
     @Test
     void testPatchCustomer() throws JsonProcessingException, Exception {
-        Customer customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
         // Provide the data to be patched (it is serialized below)
         Map<String, Object> customerMap = new HashMap<>();
@@ -92,7 +92,7 @@ public class CustomerControllerTest {
 
     @Test
     void testDeleteCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -107,7 +107,7 @@ public class CustomerControllerTest {
 
     @Test
     void testUpdateCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
             .accept(MediaType.APPLICATION_JSON)
@@ -116,18 +116,18 @@ public class CustomerControllerTest {
             .andExpect(status().isNoContent());
 
         // Verify that "updateCustomerById" has been called
-        verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(Customer.class));
+        verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
         assertThat(uuidArgumentCaptor.getValue()).isEqualTo(customer.getId());
     }
 
     @Test
     void testCreateCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
         
         customer.setId(null);
         customer.setVersion(null);
         
-        given(customerService.saveNewCustomer(any(Customer.class)))
+        given(customerService.saveNewCustomer(any(CustomerDTO.class)))
             .willReturn(customerServiceImpl.listCustomers().get(1));
 
         // Emulating what's happening in the database so returning the "correct" customer
@@ -152,7 +152,7 @@ public class CustomerControllerTest {
 
     @Test
     void getBeerById() throws Exception {
-        Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
 
         given(customerService.getCustomerById(testCustomer.getId())).willReturn(Optional.of(testCustomer));
 

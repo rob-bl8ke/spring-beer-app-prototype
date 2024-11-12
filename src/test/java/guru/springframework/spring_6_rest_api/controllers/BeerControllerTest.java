@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import guru.springframework.spring_6_rest_api.model.Beer;
+import guru.springframework.spring_6_rest_api.model.BeerDTO;
 import guru.springframework.spring_6_rest_api.services.BeerService;
 import guru.springframework.spring_6_rest_api.services.BeerServiceImpl;
 
@@ -60,7 +60,7 @@ class BeerControllerTest {
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<Beer> beerArgumentCaptor;
+    ArgumentCaptor<BeerDTO> beerArgumentCaptor;
 
     @Test
     void getBeerByIdNotFound() throws Exception {
@@ -73,7 +73,7 @@ class BeerControllerTest {
 
     @Test
     void testPatchBeer() throws Exception {
-        Beer beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
 
         // Provide the data to be patched (it is serialized below)
         Map<String, Object> beerMap = new HashMap<>();
@@ -94,7 +94,7 @@ class BeerControllerTest {
 
     @Test
     void testDeleteBeer() throws Exception {
-        Beer beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
 
         mockMvc.perform(delete(BeerController.BEER_PATH_ID, beer.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -110,7 +110,7 @@ class BeerControllerTest {
 
     @Test
     void testUpdateBeer() throws Exception {
-        Beer beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
 
         mockMvc.perform(put(BeerController.BEER_PATH_ID, beer.getId())
         .accept(MediaType.APPLICATION_JSON)
@@ -119,19 +119,19 @@ class BeerControllerTest {
         .andExpect(status().isNoContent());
         
         // Verify that "updateBeerById" has been called
-        verify(beerService).updateBeerById(uuidArgumentCaptor.capture(), any(Beer.class));
+        verify(beerService).updateBeerById(uuidArgumentCaptor.capture(), any(BeerDTO.class));
         assertThat(uuidArgumentCaptor.getValue()).isEqualTo(beer.getId());
     }
 
     @Test
     void testCreateNewBeer() throws Exception {        
-        Beer beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
         
         // A new beer coming in should not have an id or version. 
         beer.setVersion(null);
         beer.setId(null);
 
-        given(beerService.saveNewBeer(any(Beer.class)))
+        given(beerService.saveNewBeer(any(BeerDTO.class)))
             .willReturn(beerServiceImpl.listBeers().get(1));
 
         // Emulating what's happening in the database so returning the "correct" beer
@@ -157,7 +157,7 @@ class BeerControllerTest {
     @Test
     void getBeerById() throws Exception {
         // Go fetch a pre-configured beer
-        Beer testBeer = beerServiceImpl.listBeers().get(0);
+        BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
         
         // Enhance the mocked service to return this pre-configured beer given any ID
         given(beerService.getBeerById(testBeer.getId())).willReturn(Optional.of(testBeer));
