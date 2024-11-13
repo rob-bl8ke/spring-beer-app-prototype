@@ -3,6 +3,7 @@ package guru.springframework.spring_6_rest_api.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,16 @@ public class CustomerServiceJPA implements CustomerService {
 
     @Override
     public List<CustomerDTO> listCustomers() {
-        return null;
+        return customerRepository.findAll().stream()
+            .map(customerMapper::customerToCustomerDto)
+            .collect(Collectors.toList());
     }
 
     @Override
     public Optional<CustomerDTO> getCustomerById(UUID id) {
-        return null;
+        return Optional.ofNullable(customerMapper.customerToCustomerDto(
+           customerRepository.findById(id).orElse(null) 
+        ));
     }
 
     @Override
