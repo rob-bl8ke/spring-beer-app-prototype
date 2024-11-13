@@ -105,3 +105,5 @@ You can manually change the settings.json and select a runtime by choosing one a
 # Important Links
 
 - [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
+- [From Zero to Hero coding Spring Boot applications in VS Code](https://www.youtube.com/watch?v=XbpFSyeMYfg&list=WL&index=16)
+- [Spring Pet Clinic on GitHub](https://github.com/spring-projects/spring-petclinic)
