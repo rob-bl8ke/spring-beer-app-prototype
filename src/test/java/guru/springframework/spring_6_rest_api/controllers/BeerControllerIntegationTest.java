@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 
 import guru.springframework.spring_6_rest_api.entities.Beer;
+import guru.springframework.spring_6_rest_api.mappers.BeerMapper;
 import guru.springframework.spring_6_rest_api.model.BeerDTO;
 import guru.springframework.spring_6_rest_api.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,28 @@ public class BeerControllerIntegationTest {
 
     @Autowired
     BeerRepository beerRepository;
+
+    @Autowired
+    BeerMapper beerMapper;
+
+    @Test
+    @Transactional
+    @Rollback
+    void updateExistingBeer() {
+        Beer beer = beerRepository.findAll().get(0);
+        BeerDTO beerDto = beerMapper.beerToBeerDto(beer);
+        // Will pass in the id in "updatedById" and the version is auto handled.
+        beerDto.setId(null);
+        beerDto.setVersion(null);
+        final String beerName = "UPDATED";
+        beerDto.setBeerName(beerName);
+
+        ResponseEntity responseEntity = beerController.updatedById(beer.getId(), beerDto);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+        assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
+    }
 
     @Test
     @Transactional
