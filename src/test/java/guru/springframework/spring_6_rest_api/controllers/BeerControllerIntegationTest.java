@@ -34,7 +34,7 @@ public class BeerControllerIntegationTest {
     @Test
     void updateExistingBeerNotFound() {
         assertThrows(NotFoundException.class, 
-            () -> beerController.updatedById(UUID.randomUUID(), BeerDTO.builder().build()));
+            () -> beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build()));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class BeerControllerIntegationTest {
         final String beerName = "UPDATED";
         beerDto.setBeerName(beerName);
 
-        ResponseEntity responseEntity = beerController.updatedById(beer.getId(), beerDto);
+        ResponseEntity responseEntity = beerController.updateById(beer.getId(), beerDto);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
 
         Beer updatedBeer = beerRepository.findById(beer.getId()).get();
