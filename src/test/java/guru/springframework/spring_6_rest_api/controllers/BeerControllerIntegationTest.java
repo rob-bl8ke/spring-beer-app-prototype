@@ -32,6 +32,12 @@ public class BeerControllerIntegationTest {
     BeerMapper beerMapper;
 
     @Test
+    void updateExistingBeerNotFound() {
+        assertThrows(NotFoundException.class, 
+            () -> beerController.updatedById(UUID.randomUUID(), BeerDTO.builder().build()));
+    }
+
+    @Test
     @Transactional
     @Rollback
     void updateExistingBeer() {
