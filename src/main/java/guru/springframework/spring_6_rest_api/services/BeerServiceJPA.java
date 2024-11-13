@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import guru.springframework.spring_6_rest_api.entities.Beer;
 import guru.springframework.spring_6_rest_api.mappers.BeerMapper;
 import guru.springframework.spring_6_rest_api.model.BeerDTO;
 import guru.springframework.spring_6_rest_api.repositories.BeerRepository;
@@ -38,7 +39,8 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public BeerDTO saveNewBeer(BeerDTO beer) {
-        return null;
+        Beer savedBeer =  beerRepository.save(beerMapper.beerDtoToBeer(beer));
+        return beerMapper.beerToBeerDto(savedBeer);
     }
 
     @Override
