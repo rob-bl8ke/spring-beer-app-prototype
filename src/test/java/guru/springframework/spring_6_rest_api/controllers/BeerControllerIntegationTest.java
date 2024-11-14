@@ -107,7 +107,7 @@ public class BeerControllerIntegationTest {
             .beerName("Castle Lager")
             .build();
 
-        ResponseEntity responseEntity = beerController.handlePost(beerDto);
+        ResponseEntity responseEntity = beerController.saveNew(beerDto);
 
         // Assert that the response is of the correct status and have a Location header set
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));

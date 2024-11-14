@@ -77,7 +77,7 @@ public class CustomerControllerIntegrationTest {
     @Test
     void updateExistingCustomeNotFound() {
         assertThrows(NotFoundException.class,
-            () -> customerController.handlePut(UUID.randomUUID(), CustomerDTO.builder().build()));
+            () -> customerController.updateById(UUID.randomUUID(), CustomerDTO.builder().build()));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CustomerControllerIntegrationTest {
         final String customerName = "Larry Updated";
         customerDto.setName(customerName);
 
-        ResponseEntity responseEntity = customerController.handlePut(customer.getId(), customerDto);
+        ResponseEntity responseEntity = customerController.updateById(customer.getId(), customerDto);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
 
         Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
@@ -109,7 +109,7 @@ public class CustomerControllerIntegrationTest {
             .name("Jill Harpie")
             .build();
 
-        ResponseEntity responseEntity = customerController.handlePost(customerDto);
+        ResponseEntity responseEntity = customerController.saveNew(customerDto);
 
         // Assert that the response is of the correct status and have a Location header set
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
