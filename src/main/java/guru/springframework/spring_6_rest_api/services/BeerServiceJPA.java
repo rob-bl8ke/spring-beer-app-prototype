@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import guru.springframework.spring_6_rest_api.entities.Beer;
 import guru.springframework.spring_6_rest_api.mappers.BeerMapper;
@@ -54,6 +55,7 @@ public class BeerServiceJPA implements BeerService {
             foundBeer.setBeerStyle(beer.getBeerStyle());
             foundBeer.setUpc(beer.getUpc());
             foundBeer.setPrice(beer.getPrice());
+            foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
             foundBeer.setUpdateDate(LocalDateTime.now());
 
             atomicReference.set(Optional.of(
@@ -77,8 +79,35 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void patchById(UUID beerId, BeerDTO beer) {
+    public Optional<BeerDTO> patchById(UUID beerId, BeerDTO beer) {
+        AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
+        beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
+            if (StringUtils.hasText(beer.getBeerName())) {
+                foundBeer.setBeerName(beer.getBeerName());
+            }
+            if (beer.getBeerStyle() != null) {
+                foundBeer.setBeerStyle(beer.getBeerStyle());
+            }
+            if (StringUtils.hasText(beer.getUpc())) {
+                foundBeer.setUpc(beer.getUpc());
+            }
+            if (beer.getPrice() != null) {
+                foundBeer.setPrice(beer.getPrice());
+            }
+            if (beer.getQuantityOnHand() != null) {
+                foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            }
+            foundBeer.setUpdateDate(LocalDateTime.now());
+
+            atomicReference.set(Optional.of(
+                beerMapper.beerToBeerDto(beerRepository.save(foundBeer))
+            ));
+        }, () -> {
+            atomicReference.set(Optional.empty());
+        });
+
+        return atomicReference.get();
     }
 
 }

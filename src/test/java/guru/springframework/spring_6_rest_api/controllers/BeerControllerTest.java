@@ -75,6 +75,8 @@ class BeerControllerTest {
     void testPatchBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().get(0);
 
+        given(beerService.patchById(any(), any())).willReturn(Optional.of(beer));
+
         // Provide the data to be patched (it is serialized below)
         Map<String, Object> beerMap = new HashMap<>();
         beerMap.put("beerName", "Heineken");
