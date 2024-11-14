@@ -75,10 +75,10 @@ class BeerControllerTest {
                     .content(objectMapper.writeValueAsString(beerDto))
             )
             .andExpect(status().isBadRequest())
+            // ensure we get two validation errors...
+            .andExpect(jsonPath("$.length()", is(2)))
             .andReturn();
-        // Look at locals mvcResult.mockResponse.content and see the rich data that comes back about the
-        // bad request because this has been configured for the specific error in CustomErrorController.
-        // To take a look at all the information passed back go and create a json file, paste in this output.
+        // Displays only the validataion data that's useful.
         System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
