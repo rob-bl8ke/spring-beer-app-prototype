@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -68,12 +69,17 @@ class BeerControllerTest {
 
         given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
-        mockMvc.perform(post(BeerController.BEER_PATH)
-            .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(beerDto))
-        )
-        .andExpect(status().isBadRequest());
+        MvcResult mvcResult = mockMvc.perform(post(BeerController.BEER_PATH)
+                .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(beerDto))
+            )
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        // Look at locals mvcResult.mockResponse.content and see the rich data that comes back about the
+        // bad request because this has been configured for the specific error in CustomErrorController.
+        // To take a look at all the information passed back go and create a json file, paste in this output.
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
     @Test
