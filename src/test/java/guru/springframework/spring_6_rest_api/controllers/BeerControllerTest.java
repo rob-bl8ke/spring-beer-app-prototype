@@ -76,7 +76,7 @@ class BeerControllerTest {
             )
             .andExpect(status().isBadRequest())
             // ensure we get two validation errors...
-            .andExpect(jsonPath("$.length()", is(2)))
+            .andExpect(jsonPath("$.length()", is(6)))
             .andReturn();
         // Displays only the validataion data that's useful.
         System.out.println(mvcResult.getResponse().getContentAsString());
@@ -148,6 +148,22 @@ class BeerControllerTest {
         verify(beerService).updateBeerById(uuidArgumentCaptor.capture(), any(BeerDTO.class));
         assertThat(uuidArgumentCaptor.getValue()).isEqualTo(beer.getId());
     }
+
+    @Test
+    void testUpdateBeerBlankName() throws Exception {
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+        beer.setBeerName("");
+
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
+
+        mockMvc.perform(put(BeerController.BEER_PATH_ID, beer.getId())
+        .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(beer)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.length()", is(1)));
+    }
+
 
     @Test
     void testCreateNewBeer() throws Exception {        
