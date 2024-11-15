@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Builder
 @Data
@@ -18,6 +19,7 @@ public class BeerDTO {
     
     @NotBlank
     @NotNull
+    @Size(max = 50)
     private String beerName;
 
     @NotNull
@@ -25,6 +27,7 @@ public class BeerDTO {
 
     @NotBlank
     @NotNull
+    @Size(max = 255)
     private String upc;
     private Integer quantityOnHand;
 

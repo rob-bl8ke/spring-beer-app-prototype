@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -64,11 +65,14 @@ public class BeerControllerIntegationTest {
         // Beer name over 50 chars.
         beerMap.put("beerName", "***************************************************");
 
-        mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(beerMap))
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect((status().isBadRequest()));
+        MvcResult result = mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beerMap))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect((status().isBadRequest()))
+            .andReturn();
+
+        System.out.println(result.getResponse().getContentAsString());
     }
 
     @Test
