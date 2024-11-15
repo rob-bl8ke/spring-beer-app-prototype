@@ -156,4 +156,5 @@ spring.datasource.hikari.maximum-pool-size=5
 
 - [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
 - [From Zero to Hero coding Spring Boot applications in VS Code](https://www.youtube.com/watch?v=XbpFSyeMYfg&list=WL&index=16)
-- [Spring Pet Clinic on GitHub](https://github.com/spring-projects/spring-petclinic)
+- [Spring Pet Clinic on GitHub (JPA and Hibernate)](https://github.com/spring-projects/spring-petclinic)
+- [Database Initialization with Spring Boot](https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html) and also see [the lesson](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33878898).
