@@ -143,6 +143,15 @@ At this point when the profile is run it will become clear that MySQL connection
 
 > 💥💥 You may find that you'll get tons of errors when the profile runner executes. Take a good look at the mappings on the entity classes to see how you get around this. You can also set `logging.level.org.hibernate.orm.jdbc.bind=trace` to help you find and fix these issues. Just make sure you don't leave it on in a production environment.
 
+### Connection Pooling with Hikari
+
+Following properties in your profile help manage connection pooling. Open MySQL Workbench and navigate to Server Status. Have a look at the number of connections as you play wit these settings.
+
+```
+spring.datasource.hikari.pool-name=RestDB-Pooling
+spring.datasource.hikari.maximum-pool-size=5
+```
+
 # Important Links
 
 - [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
