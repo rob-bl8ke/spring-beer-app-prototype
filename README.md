@@ -155,7 +155,7 @@ spring.datasource.hikari.maximum-pool-size=5
 ### Database Migrations with Flyway
 
 - See [this lesson](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34442916)
-
+- [Execute Flyway database migrations on start up](https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/reference/html/howto-database-initialization.html#howto-execute-flyway-database-migrations-on-startup)
 # Important Links
 
 - [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
