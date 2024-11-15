@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Database creation scripts ###
+drop-and-create.sql
+create.sql
