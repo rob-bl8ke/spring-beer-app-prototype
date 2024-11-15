@@ -1,6 +1,7 @@
 package guru.springframework.spring_6_rest_api.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 
@@ -10,11 +11,30 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import guru.springframework.spring_6_rest_api.entities.Beer;
 import guru.springframework.spring_6_rest_api.model.BeerStyle;
+import jakarta.validation.ConstraintViolationException;
 
 @DataJpaTest
 public class BeerRepositoryTest {
     @Autowired
     BeerRepository beerRepository;
+
+    @Test
+    void testSaveBeerNameTooLong() {
+        assertThrows(ConstraintViolationException.class, () -> {
+            beerRepository
+            .save(Beer.builder()
+                // Beer name over 50 chars Use Jakarta @Size annotation on entity to ensure
+                // a validation rather than a database integrity error.
+                .beerName("***************************************************")
+                .beerStyle(BeerStyle.PALE_ALE)
+                .upc("564585")
+                .price(new BigDecimal("11.99"))
+            .build());
+            
+            // Ensure JPA validations
+            beerRepository.flush();
+        });
+    }
 
     @Test
     void testSaveBeer() {
