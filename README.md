@@ -102,6 +102,13 @@ You can manually change the settings.json and select a runtime by choosing one a
 
 - The way you found (which isn't workspace specific) is Command Pallette (CTRL+ALT+P) and then find "Java: Configure Java Runtime", and then simply change the JDK runtime there.
 
+## Check your `classpath`
+
+```java
+String classpathStr = System.getProperty("java.class.path");
+System.out.print(classpathStr);
+```
+
 # MySQL and H2
 
 When adding the MySQL connector depencency to the `pom.xml` file and running the application you'll still see that the connection is to the `h2` database.
