@@ -1,6 +1,7 @@
 package guru.springframework.spring_6_rest_api.controllers;
 
 import guru.springframework.spring_6_rest_api.model.BeerDTO;
+import guru.springframework.spring_6_rest_api.model.BeerStyle;
 import guru.springframework.spring_6_rest_api.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,8 +71,10 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH)
-    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName) {
-        return beerService.listBeers(beerName);
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName, 
+        @RequestParam(required = false) String beerStyle) {
+            
+        return beerService.listBeers(beerName, beerStyle != null ? BeerStyle.valueOf(beerStyle) : null);
     }
 
     @GetMapping(value = BEER_PATH_ID)
