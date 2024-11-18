@@ -6,5 +6,5 @@ import java.util.List;
 import guru.springframework.spring_6_rest_api.model.BeerCSVRecord;
 
 public interface BeerCsvService {
-    List<BeerCSVRecord> convertCsv(File file);
+    List<BeerCSVRecord> convertCsv(File csvFile);
 }

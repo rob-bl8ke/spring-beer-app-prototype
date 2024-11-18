@@ -5,10 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.opencsv.bean.CsvToBeanBuilder;
 
 import guru.springframework.spring_6_rest_api.model.BeerCSVRecord;
 
+@Service
 public class BeerCsvServiceImpl implements BeerCsvService {
 
     @Override
