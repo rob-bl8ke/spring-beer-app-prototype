@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -18,24 +17,18 @@ public class CustomerServiceImpl implements CustomerService {
                 .id(UUID.randomUUID())
                 .version(1)
                 .name("Rob Douglas")
-                .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
                 .build();
 
         CustomerDTO customer2 = CustomerDTO.builder()
                 .id(UUID.randomUUID())
                 .version(1)
                 .name("Jen Daly")
-                .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
                 .build();
 
         CustomerDTO customer3 = CustomerDTO.builder()
                 .id(UUID.randomUUID())
                 .version(1)
                 .name("Shaun Roberts")
-                .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
                 .build();
 
         customerMap.put(customer1.getId(), customer1);
@@ -59,8 +52,6 @@ public class CustomerServiceImpl implements CustomerService {
             .id(UUID.randomUUID())
             .name(customer.getName())
             .version(customer.getVersion())
-            .createdDate(LocalDateTime.now())
-            .lastModifiedDate(LocalDateTime.now())
             .build();
 
         customerMap.put(savedCustomer.getId(), savedCustomer);
@@ -73,7 +64,6 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerDTO existing = customerMap.get(customerId);
 
         existing.setName(customer.getName());
-        existing.setLastModifiedDate(LocalDateTime.now());
 
         return Optional.of(existing);
     }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -25,8 +24,6 @@ public class BeerServiceImpl implements BeerService {
                 .upc("111111")
                 .price(new BigDecimal("12.99"))
                 .quantityOnHand(122)
-                .createdDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
                 .build();
 
         BeerDTO beer2 = BeerDTO.builder()
@@ -37,8 +34,6 @@ public class BeerServiceImpl implements BeerService {
                 .upc("222222")
                 .price(new BigDecimal("11.99"))
                 .quantityOnHand(392)
-                .createdDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
                 .build();
 
         BeerDTO beer3 = BeerDTO.builder()
@@ -49,8 +44,6 @@ public class BeerServiceImpl implements BeerService {
                 .upc("333333")
                 .price(new BigDecimal("15.99"))
                 .quantityOnHand(144)
-                .createdDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
                 .build();
 
         beerMap.put(beer1.getId(), beer1);
@@ -77,8 +70,6 @@ public class BeerServiceImpl implements BeerService {
             .beerName(beer.getBeerName())
             .beerStyle(beer.getBeerStyle())
             .quantityOnHand(beer.getQuantityOnHand())
-            .createdDate(LocalDateTime.now())
-            .updateDate(LocalDateTime.now())
             .upc(beer.getUpc())
             .price(beer.getPrice())
             .version(beer.getVersion())
@@ -98,7 +89,6 @@ public class BeerServiceImpl implements BeerService {
         existing.setUpc(beer.getUpc());
         existing.setPrice(beer.getPrice());
         existing.setQuantityOnHand(beer.getQuantityOnHand());
-        existing.setUpdateDate(LocalDateTime.now());
 
         return Optional.of(existing);
     }

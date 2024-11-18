@@ -1,6 +1,5 @@
 package guru.springframework.spring_6_rest_api.services;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,7 +50,6 @@ public class CustomerServiceJPA implements CustomerService {
 
         customerRepository.findById(customerId).ifPresentOrElse(foundCustomer -> {
             foundCustomer.setName(customer.getName());
-            foundCustomer.setLastModifiedDate(LocalDateTime.now());
 
             atomicReference.set(Optional.of(
                 customerMapper.customerToCustomerDto(foundCustomer)
@@ -84,7 +82,6 @@ public class CustomerServiceJPA implements CustomerService {
             if (StringUtils.hasText(customer.getName())) {
                 foundCustomer.setName(customer.getName());
             }
-            foundCustomer.setLastModifiedDate(LocalDateTime.now());
 
             atomicReference.set(Optional.of(
                 customerMapper.customerToCustomerDto(foundCustomer)
