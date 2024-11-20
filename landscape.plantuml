@@ -1,0 +1,34 @@
+@startmindmap "Java Spring Boot"
+
++ Landscape
+++[#lightgreen] Lombok
++++_ Generate common entity comparision and builder code.
+++[#lightblue] MapStruct
++++_ Similar to to `AutoMap` in .NET
+++[#orange] OpenCSV
++++_ Import data
+++ Data
++++[#lightgreen] JDBC
++++[#lightgreen] JPA\n(Java Persistence API)
+++++_ annotations for validation
++++++ Hibernate Validator\n(Java Bean Validation)
+++++_ Low-level relational database ineraction API
++++ Hikari
+++++_ Connection Pooling
++++ Stream API
+++++_ Similar to `LINQ` in .NET
++++ Databases
+++++ MySQL
+++++ H2
++++++_ In-memory database
++++ Flyway
+++++_ Non CI/CD Migrations to QA, UAT, and Production
+++[#orange] Maven
++++_ Dependency management and build automation
+
++ VS Code Extensions
+++ Extension Pack for Java
+++ Spring Boot Extension Pack
+
+@endmindmap
+
