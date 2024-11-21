@@ -25,21 +25,31 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
 
     @Override
-    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle) {
+    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory) {
         List<Beer> beerList;
 
         if (StringUtils.hasText(beerName) && beerStyle == null) {
             beerList = listBeersByName(beerName);
-        }
-        else if (beerStyle != null && !StringUtils.hasText(beerName)) {
+        } else if (beerStyle != null && !StringUtils.hasText(beerName)) {
             beerList = listBeersByStyle(beerStyle);
+        } else if (beerStyle != null && StringUtils.hasText(beerName)) {
+            beerList = listBeersByNameAndStyle(beerName, beerStyle);
         } else {
             beerList = beerRepository.findAll();
         }
 
+        // Is this the most efficient way of doing this?
+        if (showInventory != null && !showInventory) {
+            beerList.forEach(beer -> beer.setQuantityOnHand(null));
+        }
+
         return beerList.stream()
-            .map(beerMapper::beerToBeerDto)
-            .collect(Collectors.toList());
+                .map(beerMapper::beerToBeerDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<Beer> listBeersByNameAndStyle(String beerName, BeerStyle beerStyle) {
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle);
     }
 
     private List<Beer> listBeersByStyle(BeerStyle beerStyle) {
@@ -53,14 +63,13 @@ public class BeerServiceJPA implements BeerService {
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
         return Optional.ofNullable(beerMapper.beerToBeerDto(
-            beerRepository.findById(id)
-            .orElse(null)
-        ));
+                beerRepository.findById(id)
+                        .orElse(null)));
     }
 
     @Override
     public BeerDTO saveNewBeer(BeerDTO beer) {
-        Beer savedBeer =  beerRepository.save(beerMapper.beerDtoToBeer(beer));
+        Beer savedBeer = beerRepository.save(beerMapper.beerDtoToBeer(beer));
         return beerMapper.beerToBeerDto(savedBeer);
     }
 
@@ -76,8 +85,7 @@ public class BeerServiceJPA implements BeerService {
             foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
 
             atomicReference.set(Optional.of(
-                beerMapper.beerToBeerDto(beerRepository.save(foundBeer))
-            ));
+                    beerMapper.beerToBeerDto(beerRepository.save(foundBeer))));
         }, () -> {
             atomicReference.set(Optional.empty());
         });
@@ -117,8 +125,7 @@ public class BeerServiceJPA implements BeerService {
             }
 
             atomicReference.set(Optional.of(
-                beerMapper.beerToBeerDto(beerRepository.save(foundBeer))
-            ));
+                    beerMapper.beerToBeerDto(beerRepository.save(foundBeer))));
         }, () -> {
             atomicReference.set(Optional.empty());
         });
