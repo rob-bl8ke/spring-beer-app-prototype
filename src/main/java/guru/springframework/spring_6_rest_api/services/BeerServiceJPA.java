@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,8 +25,11 @@ public class BeerServiceJPA implements BeerService {
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
 
+    private final static int DEFAULT_PAGE = 0; //account for zero offset
+    private final static int DEFAULT_PAGE_SIZE = 25;
+
     @Override
-    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory) {
+    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
         List<Beer> beerList;
 
         if (StringUtils.hasText(beerName) && beerStyle == null) {
@@ -46,6 +50,33 @@ public class BeerServiceJPA implements BeerService {
         return beerList.stream()
                 .map(beerMapper::beerToBeerDto)
                 .collect(Collectors.toList());
+    }
+
+    // This "should" go into its own testable object...
+    public PageRequest buildPageRequest(Integer pageNumber, Integer pageSize) {
+        int queryPageNumber;
+        int queryPageSize;
+
+        // account for index offset
+        if (pageNumber != null && pageNumber > 0) {
+            queryPageNumber = pageNumber - 1;
+        } else {
+            queryPageNumber = DEFAULT_PAGE;
+        }
+
+        if (pageSize == null) {
+            queryPageSize = DEFAULT_PAGE_SIZE;
+        } else {
+            // Good idea to introduce a max here...
+            if (pageSize > 1000) {
+                queryPageSize = 1000;
+            } else {
+                queryPageSize = pageSize;
+            }
+        }
+
+        // careful not to use these out of order...
+        return PageRequest.of(queryPageNumber, queryPageSize);
     }
 
     private List<Beer> listBeersByNameAndStyle(String beerName, BeerStyle beerStyle) {

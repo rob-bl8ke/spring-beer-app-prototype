@@ -32,7 +32,7 @@ public class BeerController {
     public static final String BEER_PATH_ID = "/api/v1/beer/{beerId}";
 
     private final BeerService beerService;
-    
+
     @PatchMapping(BEER_PATH_ID)
     public ResponseEntity patchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         if (beerService.patchById(beerId, beer).isEmpty()) {
@@ -41,7 +41,6 @@ public class BeerController {
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
-
 
     @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId) {
@@ -71,11 +70,13 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH)
-    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName, 
-        @RequestParam(required = false) BeerStyle beerStyle, 
-        @RequestParam(required = false) Boolean showInventory) {
-            
-        return beerService.listBeers(beerName, beerStyle, showInventory);
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+            @RequestParam(required = false) BeerStyle beerStyle,
+            @RequestParam(required = false) Boolean showInventory,
+            @RequestParam(required = false) Integer pageNumber,
+            @RequestParam(required = false) Integer pageSize) {
+
+        return beerService.listBeers(beerName, beerStyle, showInventory, pageNumber, pageSize);
     }
 
     @GetMapping(value = BEER_PATH_ID)
