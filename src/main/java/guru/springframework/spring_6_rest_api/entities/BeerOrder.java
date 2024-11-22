@@ -33,7 +33,7 @@ public class BeerOrder {
         this.customerRef = customerRef;
         this.setCustomer(customer);
         this.beerOrderLines = beerOrderLines;
-        this.beerOrderShipment = beerOrderShipment;
+        setBeerOrderShipment(beerOrderShipment);
     }
 
     @Id
@@ -70,11 +70,16 @@ public class BeerOrder {
         customer.getBeerOrders().add(this);
     }
 
+    public void setBeerOrderShipment(BeerOrderShipment beerOrderShipment) {
+        this.beerOrderShipment = beerOrderShipment;
+        beerOrderShipment.setBeerOrder(this);
+    }
+
     // See BeerOrderLIne to find the mapping
     @Builder.Default
     @OneToMany(mappedBy = "beerOrder")
     private Set<BeerOrderLine> beerOrderLines = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private BeerOrderShipment beerOrderShipment;
 }

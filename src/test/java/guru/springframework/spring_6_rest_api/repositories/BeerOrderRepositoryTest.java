@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import guru.springframework.spring_6_rest_api.entities.Beer;
 import guru.springframework.spring_6_rest_api.entities.BeerOrder;
+import guru.springframework.spring_6_rest_api.entities.BeerOrderShipment;
 import guru.springframework.spring_6_rest_api.entities.Customer;
 import jakarta.transaction.Transactional;
 
@@ -40,6 +41,10 @@ public class BeerOrderRepositoryTest {
         BeerOrder beerOrder = BeerOrder.builder()
             .customerRef("Test order")
             .customer(testCustomer)
+            .beerOrderShipment(BeerOrderShipment.builder()
+                .trackingNumber("12345c")
+                .build()
+            )
             .build();
 
         // __.saveAndFlush persists immediately to the database, allowing up-to-date access
