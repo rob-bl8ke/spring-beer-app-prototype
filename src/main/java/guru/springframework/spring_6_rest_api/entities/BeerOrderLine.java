@@ -43,7 +43,7 @@ public class BeerOrderLine {
 
     private Integer orderQuantity = 0;
     private Integer quantityAllocated = 0;
-
+    
     @ManyToOne
     private BeerOrder beerOrder;
 
