@@ -2,6 +2,7 @@ package guru.springframework.spring_6_rest_api.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,6 +73,7 @@ public class Beer {
     private LocalDateTime updateDate;
 
     // Have a look at the BeerOrderLine to see how this is "mapped"
+    @Builder.Default
     @OneToMany(mappedBy = "beer")
-    private Set<BeerOrderLine> beerOrderLines;
+    private Set<BeerOrderLine> beerOrderLines = new HashSet<>();
 }

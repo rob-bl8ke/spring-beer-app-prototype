@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -50,6 +51,7 @@ public class BeerOrder {
     private Customer customer;
 
     // See BeerOrderLIne to find the mapping
+    @Builder.Default
     @OneToMany(mappedBy = "beerOrder")
-    private Set<BeerOrderLine> beerOrderLines;
+    private Set<BeerOrderLine> beerOrderLines = new HashSet<>();
 }

@@ -1,6 +1,7 @@
 package guru.springframework.spring_6_rest_api.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,6 +50,10 @@ public class Customer {
     @UpdateTimestamp
     private LocalDateTime lastModifiedDate;
     
+    // Always important to initialize  all related sets.
+    // To have this work correctly with Project Lombok 
+    // the @Build.Default annotation is necessary
+    @Builder.Default
     @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    private Set<BeerOrder> beerOrders = new HashSet<>();
 }
