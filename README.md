@@ -163,9 +163,30 @@ spring.datasource.hikari.maximum-pool-size=5
 
 - See [this lesson](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34442916)
 - [Execute Flyway database migrations on start up](https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/reference/html/howto-database-initialization.html#howto-execute-flyway-database-migrations-on-startup)
+
+# Random Stuff
+
+### Use the debug console in VS Code
+
+All `print` and `println` stuff is written to the debug console. If you can't find it run a filter search in the console. Here is an example of printing information to this console while running tests:
+
+```java
+    @Test
+    void testBeerOrders() {
+        // Look in the "debug console" of VS Code
+        System.out.println("The number of beer orders are: " + beerOrderRepository.count());
+        System.out.println("The number of customers are: " + customerRepository.count());
+        System.out.println("The number of beers are: " + beerRepository.count());
+
+        System.out.println(testCustomer.getName());
+        System.out.println(testBeer.getBeerName());
+    }
+```
+
 # Important Links
 
 - [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
 - [From Zero to Hero coding Spring Boot applications in VS Code](https://www.youtube.com/watch?v=XbpFSyeMYfg&list=WL&index=16)
 - [Spring Pet Clinic on GitHub (JPA and Hibernate)](https://github.com/spring-projects/spring-petclinic)
 - [Database Initialization with Spring Boot](https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html) and also see [the lesson](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33878898).
+- [Processing data with Java SE 8 Streams, Part 1](https://www.oracle.com/technical-resources/articles/java/ma14-java-se-8-streams.html)
