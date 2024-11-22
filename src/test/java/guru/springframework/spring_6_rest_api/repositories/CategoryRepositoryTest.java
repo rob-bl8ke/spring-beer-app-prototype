@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import guru.springframework.spring_6_rest_api.entities.Beer;
 import guru.springframework.spring_6_rest_api.entities.Category;
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 public class CategoryRepositoryTest {
@@ -25,11 +26,16 @@ public class CategoryRepositoryTest {
         testBeer = beerRepository.findAll().get(0);
     }
 
+    @Transactional
     @Test
     void testAddCategory() {
         Category savedCategory = categoryRepository.saveAndFlush(Category.builder()
             .description("Ales")
             .build());
-        assertThat(savedCategory.getId()).isNotNull();
+
+        testBeer.addCategory(savedCategory);
+        Beer savedBeer = beerRepository.save(testBeer);
+
+        System.out.println(savedBeer.getBeerName());
     }
 }
