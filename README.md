@@ -13,6 +13,18 @@ This document contains everything you'll need to set up Java and Spring Boot wit
 - Install the [Spring Boot Extension Pack](https://marketplace.visualstudio.com/items?itemName=vmware.vscode-boot-dev-pack) (VMWare)
 
 
+## Day-to-day Dev
+
+#### Run the Tests
+
+- Navigate to "Tests".
+- Click the play or debug button to run the test(s) selection.
+
+#### Run as a particular Profile
+- Navigate to the Spring Boot dashboard.
+- Find the Apps pane. Under it you'll see the app listed.
+- Right-click it and choose "Run with profile..." or "Debug with profile".
+
 ## Generating a Spring Maven project with dependencies
 
 Let's create a Spring Maven project by clicking CTRL+SHIFT+P or simply opening the command palette. 
