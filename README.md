@@ -1,3 +1,7 @@
+# Application Overview
+
+This is a web-based application developed following [Spring Boot 3, Spring Framework 6: Beginner to Guru](https://www.udemy.com/course/spring-framework-6-beginner-to-guru) on Udemy. The application listens on the long-time Tomcat server port of 8080. This setting can be changed in the `application.properties` file.
+
 # Java Spring and VS Code
 
 This document contains everything you'll need to set up Java and Spring Boot with Visual Studio Code.
@@ -61,6 +65,20 @@ public class DummyController {
 }
 ```
 Navigate to `http://localhost:8080/` and you should see the response in the browser.
+
+> Spring will generate files and folders according to a [Standard Directory Layout](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html).
+
+### Spring Initializr Information
+
+Spring 3 contains Spring Framework 6. Spring 2 contains Spring Framework 5. When you see something like 3.0.0 (M3), this means the version and its milestone (M3).
+
+When filling in the
+- Group: It is common practice to supply the organization ie. `CygSoft`.
+- Artifact: It is common practice to supply the name of the project.
+- Package Name: Usually a combination of the above two.
+- Packaging: Usually use Jar.
+
+> Spring Boot 6 requires Java 17 or higher. Always favour the LTS release.
 
 ## Managing Versions
 
