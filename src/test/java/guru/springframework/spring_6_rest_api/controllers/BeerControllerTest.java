@@ -173,6 +173,8 @@ class BeerControllerTest {
         beer.setVersion(null);
         beer.setId(null);
 
+        // Not that "willReturn" simply returns the second beer since the beer service
+        // is returning an unimportant fake beer object (and we don't care what it is).
         given(beerService.saveNewBeer(any(BeerDTO.class)))
             .willReturn(beerServiceImpl.listBeers(null, null, false, 1, 25).getContent().get(1));
 

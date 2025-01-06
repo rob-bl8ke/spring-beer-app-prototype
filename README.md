@@ -215,8 +215,12 @@ All `print` and `println` stuff is written to the debug console. If you can't fi
 
 # Important Links
 
+- [Spring Framework Documentation](https://docs.spring.io/spring-framework/reference/index.html)
+- [Spring MockMVC](https://docs.spring.io/spring-framework/reference/testing/mockmvc.html)
 - [A Java DSL for reading JSON documents](https://github.com/json-path/JsonPath)
 - [From Zero to Hero coding Spring Boot applications in VS Code](https://www.youtube.com/watch?v=XbpFSyeMYfg&list=WL&index=16)
 - [Spring Pet Clinic on GitHub (JPA and Hibernate)](https://github.com/spring-projects/spring-petclinic)
 - [Database Initialization with Spring Boot](https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html) and also see [the lesson](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33878898).
 - [Processing data with Java SE 8 Streams, Part 1](https://www.oracle.com/technical-resources/articles/java/ma14-java-se-8-streams.html)
+- [SFG Brewery API](https://sfg-beer-works.github.io/brewery-api/) - is the API used to create the beer code.
+- [Jayway JsonPath for reading JSON documents](https://github.com/json-path/JsonPath).
