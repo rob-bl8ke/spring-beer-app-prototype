@@ -88,3 +88,75 @@ REST API should return HTTP status codes rather than exception stack traces. [Th
 Frequently you may want [simplify things](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33674546#notes) by using `@ResponseStatus` annotation on a custom exception rather than using the annotated `ExceptionController`.
 
 One may not want the "Not Found" logic to live in the service (or Controller layer). [Fix this using](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33674560#notes) the `Optional<T>` and `Optional.of()` and `.orElseThrow(NotFoundException::new)`.
+
+## DTOs (Why?)
+
+The needs of the consumers are [often different](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33663812#notes) from the needs of persistence. Don't leak data to the client tier. DTOs can be optimized for JSON serialization and deserialization. Type converters should be used through Converters. Prefer [MapStruct](https://mapstruct.org/documentation/spring-extensions/reference/html/) as the code generator. It works like Lombock via annotation processed during code compile. It has good Spring integration.
+
+Use **MapStruct** to convert between DTOs and Entities.
+
+## Spring Data JPA (Java Persistence API)
+
+Spring Data JPA is an abstraction built upon Hibernate. Hibernate is an implementation of JPA. JPA is a standard. Hibernate is an implemenation. The goal is to make database persistence easier.
+
+See `pom.xml` for `spring-boot-starter-data.jpa` and `h2` for dependencies for data persistence during development.
+
+### Entities
+
+[Entities are annotated](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33674952#notes) with the `@Entity` stereotype and note the `@Id` and `@Version` field annotation. It is best not to use `@Data` annotation with JPA entities... rather use `@Getter` and `@Setter`.
+
+When using a `UUID` as an ID is [best to use](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33721942#notes) the `@GeneratedValue(generator = "UUID")` and `@UuidGeneator()` annotations.
+
+> `@GenericGenerator(name = "UUID", strategy = "...")` is deprecated in Spring Boot 3.40+ in favor of `@UuidGeneator()`.
+
+Use the `@Column` for more control of how the SQL is created to generate the entity table.
+
+### Repositories and Services
+
+Repositories always extend `JpaRepository<T>. This allows for paging and sorting too. The [video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33721944?start=15#overview) explains the methods available via these generic repositories.
+
+Use another Spring Boot test splice to do JPA testing. The video shows the use of the `@DataJpaTest` annotation. This loads a minimal database Context to the H2 database and the test verifies that repository saves correctly to the database. The test does not load the Spring context so attempting to access any other components will result in errors.
+
+#### MapStruct
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33721954#overview) explains how to configure [MapStruct](https://mapstruct.org/) using `annotationProcessorPaths` however `annotationProcessorPaths` does not seem to be required as you have it working without them. [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33721956#overview) shows basic usage.
+
+> Note: the config as provided on course does not work, [this is how you got it to work](https://www.youtube.com/watch?app=desktop&v=7UC3ZjQnric). Look in `target/generated-sources`. Somewhere down the chain will be the `mappers` folder with the generated mappers.
+
+#### JPA Service
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729204#notes) explains how to create a service using `@Service`, `@Primary`, `@RequiredArgsConstructor`. T[he next one](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729206#overview) uses the Stream API to list items and uses `Optional.ofNullable()` and `orElse()`.
+
+#### Integration Tests
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729232#notes) tests the interaction between the service and the controller. Since this is an integration test, use `@SpringBootTest` which loads the entire Spring context. `@Transactional` and `@Rollback` must be used to ensure that the database transaction is rolled back after each test completes. [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729234#notes) tests the controller for expected Exceptions.
+
+The next set of videos create integration tests for all the CRUD operations to check for response status, headers, etc.
+
+- [Save (new)](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729236#notes)
+- [Update (by ID)](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729240#notes)
+- [Update (NOT FOUND)](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729242#notes). Asserts that NOT FOUND is correctly thrown using `Optional<T>`.
+- [Delete](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729248#notes)
+- [Delete (NOT FOUND)](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33729252#notes) - Asserts that NOT FOUND is correctly thrown.
+
+
+## Data Validation
+
+#### Controller and Entity Validation
+
+Validation is done using the [Java Bean Validation API](https://docs.spring.io/spring-framework/reference/core/validation/beanvalidation.html). Here's a [reference](https://docs.oracle.com/javaee/6/tutorial/doc/gircz.html) and this one looks at [advanced bean validation concepts](https://www.ibm.com/docs/en/was-nd/8.5.5?topic=validation-bean#cdat_beanval__title__5).
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33850108#notes) explains how the dependencies are added to your Spring project.
+
+- [Bind validation to the Entity](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33850124#notes) and use `@Validated` for the incoming `@RequestBody` DTO.
+- [Implement a custom validation handler using](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33850168#notes) `@ControllerAdvise` and `@ExceptionHandler` as a catch all for all uncaught exceptions and then [customize the data returned in the Bad Request response](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33850232#notes).
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33851452#notes) and [this video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33851458#notes) explains how to handle a `TransactionSystemException` using the `CustomErrorController`. See `MockMvcBuilders.webAppContextSetup(wac).build()` to get a reference to the full web context in your tests. Finally, the error [message is customized](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33851464#notes) to provide the reason in a more readable manner.
+
+> Constraints should exist and be consistent on both the DTO and the Entity.
+
+#### JPA Validation
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33851440#notes) explains the process. An important consideration is the use of `repository.flush()` when writing the tests in order to ensure that the test doesn't end before the operation has completed.
+
+#### Database Constraint Validation
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33851448#notes) demonstrates the `@Column` and `@Size` annotations on an entity to ensure that a failed validation occurs before Hibernate attempts to persist the data. A test ensures that the correct validation has been thrown.

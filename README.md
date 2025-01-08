@@ -224,3 +224,4 @@ All `print` and `println` stuff is written to the debug console. If you can't fi
 - [Processing data with Java SE 8 Streams, Part 1](https://www.oracle.com/technical-resources/articles/java/ma14-java-se-8-streams.html)
 - [SFG Brewery API](https://sfg-beer-works.github.io/brewery-api/) - is the API used to create the beer code.
 - [Jayway JsonPath for reading JSON documents](https://github.com/json-path/JsonPath).
+- [MapStruct](https://mapstruct.org/) is a tool used to assign properties from one object to another without the need to manually code the assignments.
