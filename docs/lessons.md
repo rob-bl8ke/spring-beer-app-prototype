@@ -324,3 +324,12 @@ Set a break point on the `assertThat` line and uncommented the `dataSource` to v
 Note how the image is targeted using the `@Container` annotation which provides the `MySQLContainer` container definition.
 
 There's a lot of magic happening here, but the result is that an image will be downloaded and a MySQL instance will be provided in a container based on that image. By overriding the settings above we can connect to this containerzied database instead.
+
+### The easy way (using `@ServiceConnection`)
+
+- [Video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/47141515#notes)
+- [Official Reference Doc](https://docs.spring.io/spring-boot/reference/testing/testcontainers.html)
+
+This approach automatically applies the correct container settings in order to talk the the MySQL database without having to manually configure it. The list of "service connections" is growing rapidly with a lot of support (ActiveMQ, Cassandra, Rabbit, Redis, etc.).
+
+See the `MySQLTest.java` file. Search for `@ServiceConnection`.
