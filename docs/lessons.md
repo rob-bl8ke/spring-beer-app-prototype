@@ -160,3 +160,91 @@ Validation is done using the [Java Bean Validation API](https://docs.spring.io/s
 #### Database Constraint Validation
 
 [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33851448#notes) demonstrates the `@Column` and `@Size` annotations on an entity to ensure that a failed validation occurs before Hibernate attempts to persist the data. A test ensures that the correct validation has been thrown.
+
+## MySQL Community Edition
+
+- [Official Site](https://dev.mysql.com/doc/)
+- [Overview Video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33663846#notes)
+
+Connectivity to MySQL is managed via a JDBC (Java Database Connectivity) Driver. Although this implementation uses MySQL the configuration steps for Spring Boot will be roughly the same for other databases.
+
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859390#notes) configures the database. The database creation script (contained in the "scripts" folder) sets the user and the user's password and is run in `MySQLWorkbench`.
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859392#notes) adds the dependency to `pom.xml`. Initially Spring Boot's auto configuration logic notes that there is nothing configured for MySQL and therefore continues to run the H2 database. This is the desired behavior as the MySQL implementation uses a Profile to manage the database target database.
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859396#notes) sets up the profile for the MySQL database using the `application-localmysql.properties` file (in resources). This includes the username, password, and connection string.
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859398#notes) investigates and resolves an issue in which the database is not being properly created. A partial fix is applied to the `application-localmysql.properties` file. The syntax between MySQL and H2 differs and causes another problem. [The solution](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859400#notes) is to fix the column definition from `varchar` and `varchar(36)` as well as to use `@JdbcTypeCode` to fix the binary data type problem. The last fix is to use `JdbcTypeCode` to fix the ID issue.
+
+#### Hikari
+
+Spring Boot's [preferred database connection pooling tool](https://docs.spring.io/spring-boot/reference/data/sql.html#data.sql.datasource.connection-pool) is [HikariCP](https://github.com/brettwooldridge/HikariCP?tab=readme-ov-file). Here's a [simple walkthrough](https://www.baeldung.com/spring-boot-hikari). See `application-localmysql.properties` and follow this [video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859402#notes).
+
+#### Generate a database creation script
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859406#notes) walks through the creation of a migration database script by adding configuration to the `application.properties` file.
+
+## Flyway (migration tool)
+
+> `mysql-init.sql` was used to manually create the database. This implementation assumes an empty database exists with a user.
+
+[This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33878898#notes) takes a look at [how to approach database initialization](https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/howto-database-initialization.html). There are a number of options that can be used to initialize/create the database with support for database-specific nuances. However the recommendation is to go with a migration tool such as Flyway.
+
+[This is the overview video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/36092650#notes).
+
+As long as you're working with standard ANSI SQL, your SQL DDL and query statements will remain similar. Where one starts running into problems is when vendor specific syntax comes into play. The database structure also needs to match the code's entity structures in order to run without error.
+
+This implementation requires support for multiple schema definition formats. A need exists to run the integration tests using the H2 database and to run in different environments using a MySQL database. One needs a way to manage these schemas and this can be done using a migration tool such as [Flyway](https://github.com/flyway/flyway?tab=readme-ov-file) or [Liquibase](https://github.com/liquibase/liquibase?tab=readme-ov-file) This solution favours Flyway.
+
+> .NET Core Web API integration test isolated runs have been implemented with the help of the [Respawn](https://github.com/jbogard/Respawn) tool without the need to target different databases.
+
+Database migration tools can
+- Create a new database
+- Hold history of migrations
+- Have a reproducable state of the database
+- Help manage changes being applied to numerous database instances.
+
+#### How it works
+
+Once configured, Spring Boot will run Flyway on startup to update the configured database to the latest changeset. Instead of establishing a baseline database schema (to support an existing database), this implementation starts with an empty database.
+
+The following steps are outlined in [the following video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34366536#notes).
+
+- Add the dependency `flyway-mysql` to `pom.xml`.
+- [By default Spring Boot will configure the location](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34442916#notes) for the migration scripts to `resources/db/migration`. You'll need to ensure that this directory path exists.
+- Scripts in this folder follow a strict naming convention (note the double underscore): `V1__init-db.sql`, `V2__next-change.sql`, etc. 
+- Change the setting `spring.jpa.hibernate.ddl-auto` from "update" to "validate".
+
+> Since Flyway takes a checksum of each new change executed, if an older file is modified Flyway will complain!
+
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34443120#notes) runs through adding a column and running a migration. Note how annotations are used on columns to provide schema detail.
+- [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34443128#notes) takes a look at more advanced Flyway configuration based on [this official Spring Boot doc](https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/reference/html/howto-database-initialization.html#howto-execute-flyway-database-migrations-on-startup).
+
+### What about managing H2 for testing and MySQL for production?
+
+One way to avoid running into issues between H2 and Flyway is to disable Flyway when running integration tests with a setting in the `application.properties` file. Now, Hibernate will simply recreate the entire H2 database from scratch in memory for each test run.
+
+```properties
+spring.flyway.enabled=false
+# default ... does not need to be explicitly specified.
+spring.jpa.hibernate.ddl-auto:update
+```
+
+The `application-localmysql.properties` file turns it back on. Flyway manages the database schema updates using an incremental history and robust versioning in order to manage updates to an external, persistent database
+
+```properties
+spring.flyway.enabled=true
+# validate the schema before attempting to make changes
+spring.jpa.hibernate.ddl-auto:validate
+```
+
+> 💡 A specific profile setting will always override a non-profile setting.
+
+## Spring Boot Test Containers
+
+- [Overview video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/47127119#notes)
+- [Testcontainers SpringBoot QuickStart](https://github.com/testcontainers/testcontainers-java-spring-boot-quickstart)
+- [Spring Boot Application Testing and Development with Testcontainers](https://www.docker.com/blog/spring-boot-application-testing-and-development-with-testcontainers/)
+- [DB Integration Tests with Spring Boot and Testcontainers](https://www.baeldung.com/spring-boot-testcontainers-integration-test)
+
+Test Containers (require Docker) is an Open Source library providing lightweight Docker containers for integration testing. Implementations are available for all popular programming languages: Java, Go, .NET, Node.js, Python, etc. Spring Boot has formal support for Test Containers.
+
+Typically used for integration testing with databases, message brokers, auth servers etc.
+

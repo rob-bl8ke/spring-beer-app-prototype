@@ -151,11 +151,7 @@ This is the desired behavior until MySQL is configured. Spring boot will always 
 2024-11-15T11:39:10.629+02:00  INFO 19084 --- [spring-6-rest-api] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:3d27779d-e8b3-495c-8ce1-7714f4fe3e73 user=SA
 ```
 
-Create a new file under the `resources` folder. Any file that follows this pattern will be recognised as a profile file. To specifically get information about what the properties for this profile are for MySQL, [see the applicable lecture](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859396).
-
-```
-application-[profilename].properties
-```
+Create a new file under the `resources` folder with the name `application-localmysql-properties`. Any file that follows this pattern (`application-[profilename]-properties`) will be recognised as a profile file. To specifically get information about what the properties for this profile are for MySQL, [see the applicable lecture](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859396).
 
 In VS Code, if one has installed the Spring Boot Dashboard, navigate to Apps and then right click on the app and select "Run with Profile". Here is a [video walkthrough example](https://github.com/microsoft/vscode-spring-boot-dashboard/pull/309#issuecomment-1499866377). Otherwise, if you don't mind checking in your `launch.json` file you [can set up configurations as below](https://github.com/microsoft/vscode-spring-boot-dashboard/issues/50#issuecomment-447411590):
 
@@ -173,7 +169,7 @@ In VS Code, if one has installed the Spring Boot Dashboard, navigate to Apps and
     "vmArgs": "-Dspring.profiles.active=profile1,profile2"  // <-- Choice 2.  via a java system property
 }
 ```
-At this point when the profile is run it will become clear that MySQL connection has beend added and the connection is present.
+At this point when the profile is run it will become clear that MySQL connection has been added and the connection is present.
 ```
 2024-11-15T12:04:33.365+02:00  INFO 15184 --- [spring-6-rest-api] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@337c46d0
 ```
@@ -225,3 +221,4 @@ All `print` and `println` stuff is written to the debug console. If you can't fi
 - [SFG Brewery API](https://sfg-beer-works.github.io/brewery-api/) - is the API used to create the beer code.
 - [Jayway JsonPath for reading JSON documents](https://github.com/json-path/JsonPath).
 - [MapStruct](https://mapstruct.org/) is a tool used to assign properties from one object to another without the need to manually code the assignments.
+- [MySQL](https://dev.mysql.com/doc/)
