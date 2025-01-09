@@ -168,6 +168,12 @@ Validation is done using the [Java Bean Validation API](https://docs.spring.io/s
 
 Connectivity to MySQL is managed via a JDBC (Java Database Connectivity) Driver. Although this implementation uses MySQL the configuration steps for Spring Boot will be roughly the same for other databases.
 
+> Once MySQL is installed you can usually check the version in PowerShell this way...
+```
+cd "C:\Program Files\MySQL\MySQL Server 8.4\bin\"
+.\mysql -V
+```
+
 - [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859390#notes) configures the database. The database creation script (contained in the "scripts" folder) sets the user and the user's password and is run in `MySQLWorkbench`.
 - [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859392#notes) adds the dependency to `pom.xml`. Initially Spring Boot's auto configuration logic notes that there is nothing configured for MySQL and therefore continues to run the H2 database. This is the desired behavior as the MySQL implementation uses a Profile to manage the database target database.
 - [This video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/33859396#notes) sets up the profile for the MySQL database using the `application-localmysql.properties` file (in resources). This includes the username, password, and connection string.
@@ -248,3 +254,73 @@ Test Containers (require Docker) is an Open Source library providing lightweight
 
 Typically used for integration testing with databases, message brokers, auth servers etc.
 
+- [Set up Maven dependencies](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/47128059#notes)
+
+### The hard way
+
+[Video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/47141073#notes)
+
+The test class requires the `@Testcontainers`, `@SpringBootTest`, and `@ActiveProfiles("localmysql")`.
+
+Note the imports. Lots of issues experienced using the wrong imports so be sure to target the correct ones.
+
+
+```java
+package guru.springframework.spring_6_rest_api.repositories;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import guru.springframework.spring_6_rest_api.entities.Beer;
+// import javax.sql.DataSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+// Marks the fact that this will use the test containers (Docker) to run these tests
+@Testcontainers
+@SpringBootTest
+@ActiveProfiles("localmysql")
+public class MySqlTest {
+
+    @Container
+    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8");
+
+    // Manually set up the certain properties to override the @ActiveProfiles settings in 
+    // order to ensure that the connection takes place against the correct containerized
+    // database. This method fetches the required properties from the container.
+    @DynamicPropertySource
+    static void mySqlProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.username", mySQLContainer::getUsername);
+        registry.add("spring.datasource.password", mySQLContainer::getPassword);
+        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
+    }
+
+    // This is not required... can be used to get configuration visibility
+    // @Autowired
+    // DataSource dataSource;
+
+    @Autowired
+    BeerRepository beerRepository;
+
+    @Test
+    void testListBeers() {
+        List<Beer> beers = beerRepository.findAll();
+        assertThat(beers.size()).isGreaterThan(0);
+    }
+}
+
+```
+Set a break point on the `assertThat` line and uncommented the `dataSource` to view the properties comming in from the active profile. In order to target the correct database the username, password, and url settings need to be overriden. There is a hierarchy to these settings. The main properties file will have its settings overriden by those defined in the profile settings file and those settings will in turn be overridden above using `DynamicPropertyRegistry`.
+
+Note how the image is targeted using the `@Container` annotation which provides the `MySQLContainer` container definition.
+
+There's a lot of magic happening here, but the result is that an image will be downloaded and a MySQL instance will be provided in a container based on that image. By overriding the settings above we can connect to this containerzied database instead.
