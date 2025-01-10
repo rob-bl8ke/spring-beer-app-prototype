@@ -222,3 +222,4 @@ All `print` and `println` stuff is written to the debug console. If you can't fi
 - [Jayway JsonPath for reading JSON documents](https://github.com/json-path/JsonPath).
 - [MapStruct](https://mapstruct.org/) is a tool used to assign properties from one object to another without the need to manually code the assignments.
 - [MySQL](https://dev.mysql.com/doc/)
+- [Using Lombok in Spring Boot: Simplifying Your Code](https://medium.com/devdomain/using-lombok-in-spring-boot-simplifying-your-code-c38057894cb8)
