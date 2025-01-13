@@ -368,3 +368,22 @@ Ensure to configure this dependency. Look for the `compose.yml` file to see how 
         <optional>true</optional>
     </dependency>
 ```
+
+## Loading CSV Data
+
+- Data originally provided via [Plotly GitHub Repository](https://github.com/plotly/datasets) under MIT license. [Original file](https://github.com/plotly/datasets/blob/master/beers.csv) here for your convenience.
+- [OpenCSV](https://opencsv.sourceforge.net/#quick_start) tool.
+- [Video Source - Building up the data classes](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34474164#notes)
+- [Video Source - Mapping with OpenCSV](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/34474540#notes)
+
+
+
+Use `@CsvBindByName` to apply the mappings to properties. This allows you to target the original column names with your own property names. See `BeerCSVRecord`.
+
+```xml
+    <dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>5.9</version>
+    </dependency>
+```
