@@ -355,3 +355,16 @@ One can also run this in the terminal to achieve the same result:
 mvn verify
 mvn test
 ```
+
+## Add Docker Compose Support (for local development)
+
+Ensure to configure this dependency. Look for the `compose.yml` file to see how the MySQL database service is configured. See the `spring.docker.compose.enabled` property in the properties files to see how docker usage is turned on and off.
+
+```xml
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-docker-compose</artifactId>
+        <scope>runtime</scope>
+        <optional>true</optional>
+    </dependency>
+```
