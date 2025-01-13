@@ -20,7 +20,7 @@ import guru.springframework.spring_6_rest_api.repositories.CustomerRepository;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
-public class CustomerControllerIntegrationTest {
+public class CustomerControllerIT {
     @Autowired
     CustomerController customerController;
 

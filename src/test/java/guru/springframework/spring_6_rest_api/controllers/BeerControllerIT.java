@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // Load the entire context as this is an integration test
 @SpringBootTest
-public class BeerControllerIntegationTest {
+public class BeerControllerIT {
     @Autowired
     ObjectMapper objectMapper;
 

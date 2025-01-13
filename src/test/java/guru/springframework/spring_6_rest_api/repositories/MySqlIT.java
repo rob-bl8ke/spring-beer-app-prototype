@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // Benchmark performance. Downside to test containers is performance!
 // @Disabled
 
-public class MySqlTest {
+public class MySqlIT {
 
     @Container
     @ServiceConnection

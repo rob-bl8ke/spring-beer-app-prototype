@@ -333,3 +333,25 @@ There's a lot of magic happening here, but the result is that an image will be d
 This approach automatically applies the correct container settings in order to talk the the MySQL database without having to manually configure it. The list of "service connections" is growing rapidly with a lot of support (ActiveMQ, Cassandra, Rabbit, Redis, etc.).
 
 See the `MySQLTest.java` file. Search for `@ServiceConnection`.
+
+### Improving Test Container Test Performance
+
+- [Maven Failsafe Plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/)
+- [Source Video](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/learn/lecture/47143057#notes)
+
+Adding the following plugin will ensure that when the Maven Lifecycle "test" command is run, only our unit tests (tests that end with "*Test.java") will run. Integration test files (identified using "*.IT.java") will run when the Maven Lifecycle "verify" command is run. This is identified as a best practice as integration tests will run a lot slower.
+
+```xml
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        ...
+    </plugin>
+```
+
+One can also run this in the terminal to achieve the same result:
+
+```
+mvn verify
+mvn test
+```
