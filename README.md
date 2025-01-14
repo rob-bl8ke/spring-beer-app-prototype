@@ -16,6 +16,39 @@ This document contains everything you'll need to set up Java and Spring Boot wit
 - Install the [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) (Microsoft)
 - Install the [Spring Boot Extension Pack](https://marketplace.visualstudio.com/items?itemName=vmware.vscode-boot-dev-pack) (VMWare)
 
+## VS Code `launch.json`
+
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Spring6RestApiApplication",
+            "request": "launch",
+            "mainClass": "guru.springframework.spring_6_rest_api.Spring6RestApiApplication",
+            "projectName": "spring-6-rest-api"
+        }
+    ]
+}
+```
+
+## VS Code `settings.json`
+
+```json
+{
+    "java.configuration.updateBuildConfiguration": "disabled"
+}
+```
 
 ## Day-to-day Dev
 
