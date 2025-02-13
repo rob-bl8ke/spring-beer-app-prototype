@@ -170,6 +170,9 @@ public class BeerControllerIT {
             () -> beerController.patchById(UUID.randomUUID(), BeerDTO.builder().build()));
     }
 
+    // Avoid test side-effects. On test splices Spring Boot will automatically roll back… 
+    // but because we’re executing the controller this will not happen. These annotations 
+    // ensure that your integration test runs in isolation and does not affect subsequent tests.
     @Test
     @Transactional
     @Rollback
@@ -190,12 +193,17 @@ public class BeerControllerIT {
     }
 
 
+    // Tests a rainy day scenario, expect that an exception will be thrown.
+    // The item cannot be found.
     @Test
     void testDeleteByIdNotFound() {
         assertThrows(NotFoundException.class, 
             () -> beerController.deleteById(UUID.randomUUID()));
     }
 
+    // Avoid test side-effects. On test splices Spring Boot will automatically roll back… 
+    // but because we’re executing the controller this will not happen. These annotations 
+    // ensure that your integration test runs in isolation and does not affect subsequent tests.
     @Transactional
     @Rollback
     @Test
@@ -213,6 +221,9 @@ public class BeerControllerIT {
             () -> beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build()));
     }
 
+    // Avoid test side-effects. On test splices Spring Boot will automatically roll back… 
+    // but because we’re executing the controller this will not happen. These annotations 
+    // ensure that your integration test runs in isolation and does not affect subsequent tests.
     @Test
     @Transactional
     @Rollback
@@ -232,6 +243,9 @@ public class BeerControllerIT {
         assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
     }
 
+    // Avoid test side-effects. On test splices Spring Boot will automatically roll back… 
+    // but because we’re executing the controller this will not happen. These annotations 
+    // ensure that your integration test runs in isolation and does not affect subsequent tests.
     @Test
     @Transactional
     @Rollback
@@ -275,6 +289,9 @@ public class BeerControllerIT {
         assertThat(dtos.getContent().size()).isEqualTo(1000);
     }
 
+    // Avoid test side-effects. On test splices Spring Boot will automatically roll back… 
+    // but because we’re executing the controller this will not happen. These annotations 
+    // ensure that your integration test runs in isolation and does not affect subsequent tests.
     @Transactional
     @Rollback
     @Test

@@ -17,3 +17,7 @@ public async Task<int> MethodAsync(int arg0, int arg1)
 ```
 
 How does one achieve the same end using Java Spring Boot?
+
+# Not a valid Java Project
+
+When building in Visual Studio Code, a popup shows on the bottom right with the following message: "ConfigError: The project 'spring-6-rest-api' is not a valid java project." When "Continue" is pressed the project compiles and runs successfully and the breakpoints are hit successfully.

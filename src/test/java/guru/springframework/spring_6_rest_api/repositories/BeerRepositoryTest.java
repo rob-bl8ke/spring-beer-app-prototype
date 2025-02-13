@@ -17,6 +17,10 @@ import guru.springframework.spring_6_rest_api.model.BeerStyle;
 import guru.springframework.spring_6_rest_api.services.BeerCsvServiceImpl;
 import jakarta.validation.ConstraintViolationException;
 
+// Loads a minimal database context (but doesn't load the Spring Boot context)
+// Hibernate performs reflection
+// These tests assert database operations
+// Controllers do not work in these tests.
 @DataJpaTest
 @Import({BootstrapData.class, BeerCsvServiceImpl.class})
 public class BeerRepositoryTest {

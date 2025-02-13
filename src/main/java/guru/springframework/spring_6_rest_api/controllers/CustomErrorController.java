@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import jakarta.validation.ConstraintViolationException;
 
+// Usually use @ControllerAdvice on an "exception" controller to handle exceptions
+// globally for all controllers.  
 @ControllerAdvice
 public class CustomErrorController {
 

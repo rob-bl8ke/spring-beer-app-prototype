@@ -7,10 +7,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import guru.springframework.spring_6_rest_api.model.BeerStyle;
@@ -33,6 +32,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
+
+// Using @Data for an entity is not recommended.
+// Generate getters and setters only.
 @Getter
 @Setter
 @Entity
@@ -41,8 +43,10 @@ import lombok.Setter;
 public class Beer {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    // Necessary to create a "sequential guid" which is more performant
+    @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
+    // "updatable" is false. This value is immutable.
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
@@ -52,6 +56,10 @@ public class Beer {
     @Column(length = 50)
     private String beerName;
     
+    // Used as part of Hibernate's locking strategy. Every time this
+    // entity is updated, this version property will be incremented by 1
+    // Hibernate will check the version in the database, if they're different
+    // an exception will be thrown as your entity is stale.
     @Version
     private Integer version;
 
