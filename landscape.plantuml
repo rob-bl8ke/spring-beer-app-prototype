@@ -8,18 +8,27 @@
 ++[#orange] OpenCSV
 +++_ Import data
 ++ Data
-+++[#lightgreen] JDBC
-+++[#lightgreen] JPA\n(Java Persistence API)
-++++_ annotations for validation
-+++++ Hibernate Validator\n(Java Bean Validation)
-++++_ Low-level relational database ineraction API
-+++ Hikari
-++++_ Connection Pooling
-+++ Stream API
-++++_ Similar to `LINQ` in .NET
 +++ Databases
 ++++ MySQL
 ++++ H2
++++[#lightgreen] JDBC
+++++_ Driver-level database communication like ODBC
+++++[#lightgreen] JPA\n(Java Persistence API)
++++++ JPA Query Language (JPQL)
+++++++_ Query language for retrieving objects
++++++_ annotations for validation
+++++++ Hibernate Validator\n(Java Bean Validation)
++++++_ Low-level relational database ineraction API
++++++ DAO
+++++++_ EntityManager
++++++++_ low-level
+++++++_ JPARepository
++++++++_ higher abstraction
+
++++_ Connection Pooling
+++++ Hikari
++++_ Similar to `LINQ` in .NET
+++++ Stream API
 +++++_ In-memory database
 +++ Flyway
 ++++_ Non CI/CD Migrations to QA, UAT, and Production
